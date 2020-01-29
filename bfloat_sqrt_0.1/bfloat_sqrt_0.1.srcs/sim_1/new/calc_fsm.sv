@@ -61,7 +61,7 @@ logic                       isNaN_r, isNaN_next;
 logic                       isZ_r, isZ_next;
 logic                       isInf_r, isInf_next;	
 
-logic                       exp_odd_r;
+logic [15:0]                g_temp_r;
 logic [8:0]                 y_temp_r; //in order to be consistent in sizes
 logic [15:0]                y_square_r;
 logic [23:0]                b_partial_r;
@@ -164,7 +164,8 @@ begin
             y_square_r = y_r * y_r;
             b_partial_r = b_r * y_square_r;
             b_next = b_partial_r[21 -: 8];			//each number has 7 fractional digits, 3 multiplications implies 21 fractional digits, bit indexed 21 is the first integer digit
-            g_next = g_r * y_r;					 
+            g_temp_r = g_r * y_r;
+            g_next = g_temp_r[14 -: 8];					 
             iteration_next = iteration_r + 1;
             if(iteration_r < NUMBER_OF_ITERATIONS - 1 && b_next != 'b10000000)        
                 ss_next = WORK;
