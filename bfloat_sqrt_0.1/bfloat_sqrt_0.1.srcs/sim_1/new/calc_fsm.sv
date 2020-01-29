@@ -42,7 +42,7 @@ output logic                isZ_o,
 output logic                isInf_o
 );
 
-//to insert the package inclusion for the constants.
+import lampFPU_pkg::*;
 
 localparam IDLE = 2'b00, WORK = 2'b01, CALC = 2'b10, RESULT = 2'b11;
 localparam NUMBER_OF_ITERATIONS = 5;
@@ -52,7 +52,7 @@ logic [1:0]     ss, ss_next;
 
 logic [(7+1)-1:0]           b_r, b_next;
 logic [(7+1)-1:0]           y_r, y_next;
-logic [(7+1)-1:0]           g_r, g_next;
+logic [(2*(7+1))-1:0]       g_r, g_next;                    //use double precision for g in order to address rounding at normalization step
 logic                       s_r, s_r_next;                  //to keep in memory the sign of the result, that can be computer immediately
 logic [(8+1)-1:0]           e_r, e_r_next;                  //same as above	
 logic [2:0]                 iteration_r, iteration_next;
@@ -65,6 +65,7 @@ logic [15:0]                g_temp_r;
 logic [8:0]                 y_temp_r; //in order to be consistent in sizes
 logic [15:0]                y_square_r;
 logic [23:0]                b_partial_r;
+logic [7:0]                 lzeros_r;
 
 always @(posedge clk)
 begin
@@ -126,7 +127,7 @@ begin
                     ss_next = RESULT;
                     s_r_next = '1;
                     e_r_next = 'd255;
-                    g_next = 'd1;
+                    g_next = '0 - 1;
                     isNaN_next = '1;
                 end
                 else if(isZ_op1_i | isInf_op1_i | isNaN_op1_i)
@@ -134,7 +135,7 @@ begin
                     ss_next = RESULT;
                     s_r_next = s_op1_i;
                     e_r_next = extE_op1_i;
-                    g_next = extF_op1_i;
+                    g_next = {extF_op1_i, 8'd0};
                     isNaN_next = isNaN_op1_i;
                     isZ_next = isZ_op1_i;
                     isInf_next = isInf_op1_i;
@@ -148,7 +149,7 @@ begin
                     b_next = (extE_op1_i[0] || extE_op1_i == '0) ? extF_op1_i : (extF_op1_i) >> 1;          //if exp is even, unbiased is odd, so divided by 2 would lead to fractionary exponent
                     e_r_next = (extE_op1_i >> 1) + 64;                                                      //to solve this we put part of the exponent inside the mantissa and make it even
                     s_r_next = s_op1_i;                                                                     //exponent calculation can be done immediately then
-                    g_next = b_next; 		
+                    g_next = {b_next, 8'd0}; 		
                     iteration_next = '0;	
                 end
             end
@@ -164,8 +165,7 @@ begin
             y_square_r = y_r * y_r;
             b_partial_r = b_r * y_square_r;
             b_next = b_partial_r[21 -: 8];			//each number has 7 fractional digits, 3 multiplications implies 21 fractional digits, bit indexed 21 is the first integer digit
-            g_temp_r = g_r * y_r;
-            g_next = g_temp_r[14 -: 8];					 
+            g_next = (g_r[15-:8] * y_r) << 1;		//we use only the most relevant bits for the multiplication. The result would have 2 integer digits, so we shift		 
             iteration_next = iteration_r + 1;
             if(iteration_r < NUMBER_OF_ITERATIONS - 1 && b_next != 'b10000000)        
                 ss_next = WORK;
@@ -175,9 +175,11 @@ begin
         RESULT:
 		begin
 			valid_o = '1;
+			lzeros_r = FUNC_numLeadingZeros(g_r[15-:8]);
             s_res_o = s_r;
-            e_res_o = e_r;
-            f_res_o = g_r;
+            e_res_o = e_r - lzeros_r;
+            g_temp_r = g_r << lzeros_r;
+            f_res_o = g_temp_r[15-:8];
             isNaN_o = isNaN_r;
             isZ_o = isZ_r;
             isInf_o = isInf_r;
