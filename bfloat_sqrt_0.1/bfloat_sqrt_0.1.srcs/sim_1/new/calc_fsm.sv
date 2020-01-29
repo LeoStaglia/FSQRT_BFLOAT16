@@ -57,7 +57,7 @@ logic [(7+1)-1:0] b, b_next;
 logic [(7+1)-1:0] y, y_next;
 logic [(7+1)-1:0] g, g_next;
 logic s_o, s_o_next; //to keep in memory the sign of the result, that can be computer immediately
-logic [(8+1)-1:0] e_o, e_o_next; //same as above
+logic [(8+1)-1:0] e_o, e_o_next; //same as above		(IMO better not to use _o)
 
 logic [2:0] iteration_r, iteration_next;
 
@@ -71,7 +71,7 @@ begin
     if(rst)
     begin
         ss <= IDLE;
-        b <= '0;
+        b <= '0;			//maybe use x there? (except for iteration)
         y <= '0;
         g <= '0;
         s_o <= '0;
@@ -115,7 +115,7 @@ begin
                 b_next = extF_op1_i;
                 e_o_next = ((extE_op1_i - 127) >> 2) + 127; //exponent calculation can be done immediately for normalized numbers
                 s_o_next = s_op1_i;
-                g_next <= '1;
+                g_next <= extF_op1_i;				//g actually starts at b value			
                 if(s_o_next == 0)
                     ss_next = WORK;
                 else
@@ -124,11 +124,11 @@ begin
         end
         WORK:
         begin
-            if(iteration_r < NUMBER_OF_ITERATIONS)
+            if(iteration_r < NUMBER_OF_ITERATIONS)			//this check may be done in calc to save a clock cycle
                 begin
                     y_temp = ((9'b110000000 - ({1'b0, b})) >> 2);
                     y_next = y_temp[7:0]; //taking the first 8 bits of the result of the previous operations (we are sure that the most significant bit will always be 0)
-                    g_next = g * y_next;
+                    //g_next = g * y_next; 			this shall be moved in calc
                     ss_next = CALC;
                 end
             else
@@ -138,14 +138,24 @@ begin
         begin
             y_square = y * y;
             b_partial = b * y_square;
-            b_next = b_partial[23 -: 8];
+            b_next = b_partial[21 -: 8];			//changed from 23 to 21: each number has 7 fractional digits, 3 multiplications implies 21 fractional digits, bit indexed 21 is the first integer digit
+			g_next = g * y_next;					//moved from work
             iteration_next = iteration_r + 1;
         end
-        
-        //missing result state.
-            
-    
-    
+        RESULT:
+		begin
+			valid_o = '1;
+			if(s_o)
+			begin
+				//handle error via another exit or just return NaN
+			end
+			else
+			begin
+				//Normalize
+				s_res_o = s_o;
+				e_res_o = e_o;
+				f_res_o = g;
+			end
     endcase
     
 end
