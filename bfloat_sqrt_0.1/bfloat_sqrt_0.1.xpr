@@ -3,7 +3,7 @@
 <!--                                                         -->
 <!-- Copyright 1986-2018 Xilinx, Inc. All Rights Reserved.   -->
 
-<Project Version="7" Minor="38" Path="C:/Users/mrbo9/xilinx_proj/FSQRT_BFLOAT16/bfloat_sqrt_0.1/bfloat_sqrt_0.1.xpr">
+<Project Version="7" Minor="38" Path="Z:/Desktop/Digital Design Project/FSQRT_BFLOAT16/bfloat_sqrt_0.1/bfloat_sqrt_0.1.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
     <Option Name="Id" Val="796d4bb79d364b3d8480bcd7e881709b"/>
@@ -87,9 +87,16 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
+      <File Path="$PSRCDIR/sim_1/new/tb_sqrt.sv">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
       <Config>
         <Option Name="DesignMode" Val="RTL"/>
-        <Option Name="TopModule" Val="calc_fsm"/>
+        <Option Name="TopModule" Val="tb_sqrt"/>
         <Option Name="TopLib" Val="xil_defaultlib"/>
         <Option Name="TopAutoSet" Val="TRUE"/>
         <Option Name="TransportPathDelay" Val="0"/>
