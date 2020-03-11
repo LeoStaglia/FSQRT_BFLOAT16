@@ -35,7 +35,7 @@ input logic             isNaN_op1_i,
 
 output logic                s_res_o,
 output logic [(8+1)-1:0]    e_res_o,
-output logic [(7+1)-1:0]    f_res_o,
+output logic [(7+1)-1 + 3 /*G, R, S bits*/:0]    f_res_o,
 output logic                valid_o,
 output logic                isNaN_o,
 output logic                isZ_o,
@@ -50,9 +50,9 @@ localparam NUMBER_OF_ITERATIONS = 5;
 //state registers
 logic [1:0]     ss, ss_next;
 
-logic [(7+1)-1:0]           b_r, b_next;
-logic [(7+1)-1:0]           y_r, y_next;
-logic [(2*(7+1))-1:0]       g_r, g_next;                    //use double precision for g in order to address rounding at normalization step
+logic [(7+1)-1 + 3 /*G, R, S bits*/:0]           b_r, b_next;
+logic [(7+1)-1 + 3 /*G, R, S bits*/:0]           y_r, y_next;
+logic [(2*(7+1))-1 + 6 /*2* G, R, S bits*/:0]       g_r, g_next;                    //use double precision for g in order to address rounding at normalization step
 logic                       s_r, s_r_next;                  //to keep in memory the sign of the result, that can be computer immediately
 logic [(8+1)-1:0]           e_r, e_r_next;                  //same as above	
 logic [2:0]                 iteration_r, iteration_next;
@@ -62,7 +62,7 @@ logic                       isZ_r, isZ_next;
 logic                       isInf_r, isInf_next;	
 
 logic [15:0]                g_temp_r;
-logic [8:0]                 y_temp_r; //in order to be consistent in sizes
+logic [12:0]                y_temp_r; //in order to be consistent in sizes
 logic [15:0]                y_square_r;
 logic [23:0]                b_partial_r;
 logic [7:0]                 lzeros_r;
@@ -149,15 +149,15 @@ begin
                     b_next = (extE_op1_i[0] || extE_op1_i == '0) ? extF_op1_i : (extF_op1_i) >> 1;          //if exp is even, unbiased is odd, so divided by 2 would lead to fractionary exponent
                     e_r_next = (extE_op1_i >> 1) + 64;                                                      //to solve this we put part of the exponent inside the mantissa and make it even
                     s_r_next = s_op1_i;                                                                     //exponent calculation can be done immediately then
-                    g_next = {b_next, 8'd0}; 		
+                    g_next = {b_next, 14'd0}; 		
                     iteration_next = '0;	
                 end
             end
         end
         WORK:
         begin
-            y_temp_r = ((9'b110000000 - ({1'b0, b_r})) >> 1);
-            y_next = y_temp_r[7:0];                         //taking the first 8 bits of the result of the previous operations (we are sure that the most significant bit will always be 0)
+            y_temp_r = {(12'b110000000000 - ({1'b0, b_r})), 1'b0} >> 1;
+            y_next = {y_temp_r[11:2], (y_temp_r[1] || y_temp_r[0])};                         //taking the first 8 bits of the result of the previous operations (we are sure that the most significant bit will always be 0)
             ss_next = CALC;
         end 
         CALC:
