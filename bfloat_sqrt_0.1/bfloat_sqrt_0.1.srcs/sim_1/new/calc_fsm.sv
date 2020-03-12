@@ -177,7 +177,7 @@ begin
         WORK:			// 110000000000
         begin			// iifffffffgrs
 			y_temp_r = 12'b110000000000 - ({1'b0, b_r});
-            y_next = {y_temp_r[11:2], |y_double_temp_r[1:0]};                         //taking the first 8 bits of the result of the previous operations (we are sure that the most significant bit will always be 0)
+            y_next = {y_temp_r[11:2], |y_temp_r[1:0]};                         //taking the first 8 bits of the result of the previous operations (we are sure that the most significant bit will always be 0)
             ss_next = CALC;
         end 
         CALC:
@@ -190,7 +190,8 @@ begin
 			i_temp_r = (i_r * y_r);
 			lzeros_inv_r = FUNC_numLeadingZeros(i_temp_r[21-:8]);
 			i_ib_next = i_ib_r + 1 - lzeros_inv_r;
-			i_next = {i_temp_r[(21 - lzeros_inv_r) -: 10], |i_temp_r[(11 - lzeros_inv_r):0]};		//check if this notation can work, otherwise use <<
+			i_temp_r = i_temp_r << lzeros_inv_r;
+			i_next = {i_temp_r[21 -:10], |i_temp_r[10:0]};		//check if this notation can work, otherwise use << 
             iteration_next = iteration_r + 1;
             if(iteration_r < NUMBER_OF_ITERATIONS - 1 && b_next != 'b10000000000)        
                 ss_next = WORK;
