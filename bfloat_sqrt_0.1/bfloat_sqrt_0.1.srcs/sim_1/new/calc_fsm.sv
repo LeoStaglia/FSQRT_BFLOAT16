@@ -53,9 +53,11 @@ logic [1:0]     ss, ss_next;
 logic [(7+1)-1 + 3 /*G, R, S bits*/:0]           b_r, b_next;
 logic [(7+1)-1 + 3 /*G, R, S bits*/:0]           y_r, y_next;
 logic [(7+1)-1 + 3 /*G, R, S bits*/:0]        	 g_r, g_next;
+logic [(7+1)-1 + 3 /*G, R, S bits*/:0]        	 i_r, i_next;
 logic                       s_r, s_r_next;                  //to keep in memory the sign of the result, that can be computed immediately
 logic [(8+1)-1:0]           e_r, e_r_next;                  //same as above	
 logic [2:0]                 iteration_r, iteration_next;
+logic [8-1:0]	      		i_ib_r, i_ib_next;				//represents the number of bits needed to represent the integer part in the inverse
 
 logic                       isNaN_r, isNaN_next;
 logic                       isZ_r, isZ_next;
@@ -64,25 +66,30 @@ logic                       isInf_r, isInf_next;
 //dimension of the sizes follows this representation:
 //x*(size+i+grs), where x represents the number of float multiplied, size is the dimension of the fractional part, i of the integer part, grs are guard, round, sticky bits
 logic [2*(7+1+3)-1:0]       g_temp_r;
+logic [2*(7+1+3)-1:0]		i_temp_r;
 logic [(7+2+3)-1:0]         y_temp_r; 			//in order to be consistent in sizes
 logic [2*(7+1+3)-1:0]       y_square_r;
 logic [3*(7+1+3)-1:0]       b_partial_r;
 logic [7:0]                 lzeros_r;
+logic [7:0]					lzeros_inv_r;
+
 
 always @(posedge clk)
 begin
     if(rst)
     begin
         ss          <= IDLE;
-        b_r         <= 'x;			
+        b_r         <= 'x;		
         y_r         <= 'x;
         g_r         <= 'x;
+		i_r			<= 'x;
         s_r         <= 'x;
         e_r         <= 'x;              //check if those x create some problems
         isNaN_r     <= 'x;
         isZ_r       <= 'x;
         isInf_r     <= 'x;
         iteration_r <= 'x;
+		i_ib_r		<= 'x;
     end
     else
     begin
@@ -90,12 +97,14 @@ begin
         b_r <= b_next;
         y_r <= y_next;
         g_r <= g_next;
+		i_r <= i_next;
         s_r <= s_r_next;
         e_r <= e_r_next;
         isNaN_r <= isNaN_next;
         isZ_r <= isZ_next;
         isInf_r <= isInf_next;
         iteration_r <= iteration_next;
+		i_ib_r <= i_ib_next;
     end
 
 end
@@ -118,6 +127,11 @@ begin
     s_r_next = s_r;
     e_r_next = e_r;
     ss_next = ss;
+	isNaN_next = isNaN_r;
+	isZ_next = isZ_r;
+	isInf_next = isInf_r;
+	iteration_next = iteration_r;
+	i_ib_next = i_ib_r;
 //-------------------------------------------------------------------------------------------------------------------------------------------------------
     case(ss)
         IDLE:
@@ -131,6 +145,7 @@ begin
                     e_r_next = 'd255;
                     g_next = '0 - 1;
                     isNaN_next = '1;
+					//ADD SUPPROT FOR INVERSE
                 end
                 else if(isZ_op1_i | isInf_op1_i | isNaN_op1_i)
                 begin
@@ -138,6 +153,7 @@ begin
                     s_r_next = s_op1_i;
                     e_r_next = extE_op1_i;
                     g_next = {extF_op1_i, 3'd0};
+					//ADD SUPPROT FOR INVERSE
                     isNaN_next = isNaN_op1_i;
                     isZ_next = isZ_op1_i;
                     isInf_next = isInf_op1_i;
@@ -152,6 +168,8 @@ begin
                     e_r_next = (extE_op1_i >> 1) + 64;                                                      			//to solve this we put part of the exponent inside the mantissa and make it even
                     s_r_next = s_op1_i;                                                                     			//exponent calculation can be done immediately then
                     g_next = b_next; 																					//second constructor is first constructor >> 1
+					i_next = 11'b10000000000;
+					i_ib_next = 'd1;
                     iteration_next = '0;	
                 end
             end
@@ -169,6 +187,10 @@ begin
             b_next = b_partial_r[30 -: 11];				//each number has 7+3 fractional digits, 3 multiplications implies 30 fractional digits, bit indexed 30 is the first integer digit
             g_temp_r = (g_r * y_r);				//we use only the most relevant bits for the multiplication. The result would have 2 integer digits, so we shift		 
 			g_next = {g_temp_r[20 -:10], |g_temp_r[10:0]};
+			i_temp_r = (i_r * y_r);
+			lzeros_inv_r = FUNC_numLeadingZeros(i_temp_r[21-:8]);
+			i_ib_next = i_ib_r + 1 - lzeros_inv_r;
+			i_next = {i_temp_r[(21 - lzeros_inv_r) -: 10], |i_temp_r[(11 - lzeros_inv_r):0]};		//check if this notation can work, otherwise use <<
             iteration_next = iteration_r + 1;
             if(iteration_r < NUMBER_OF_ITERATIONS - 1 && b_next != 'b10000000000)        
                 ss_next = WORK;
