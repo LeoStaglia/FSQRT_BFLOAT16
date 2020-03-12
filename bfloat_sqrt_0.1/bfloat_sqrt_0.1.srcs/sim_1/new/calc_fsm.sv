@@ -52,8 +52,8 @@ logic [1:0]     ss, ss_next;
 
 logic [(7+1)-1 + 3 /*G, R, S bits*/:0]           b_r, b_next;
 logic [(7+1)-1 + 3 /*G, R, S bits*/:0]           y_r, y_next;
-logic [(2*(7+1))-1 + 6 /*2* G, R, S bits*/:0]       g_r, g_next;                    //use double precision for g in order to address rounding at normalization step
-logic                       s_r, s_r_next;                  //to keep in memory the sign of the result, that can be computer immediately
+logic [(7+1)-1 + 3 /*G, R, S bits*/:0]        	 g_r, g_next;
+logic                       s_r, s_r_next;                  //to keep in memory the sign of the result, that can be computed immediately
 logic [(8+1)-1:0]           e_r, e_r_next;                  //same as above	
 logic [2:0]                 iteration_r, iteration_next;
 
@@ -61,10 +61,12 @@ logic                       isNaN_r, isNaN_next;
 logic                       isZ_r, isZ_next;
 logic                       isInf_r, isInf_next;	
 
-logic [15:0]                g_temp_r;
-logic [12:0]                y_temp_r; //in order to be consistent in sizes
-logic [15:0]                y_square_r;
-logic [23:0]                b_partial_r;
+//dimension of the sizes follows this representation:
+//x*(size+i+grs), where x represents the number of float multiplied, size is the dimension of the fractional part, i of the integer part, grs are guard, round, sticky bits
+logic [2*(7+1+3)-1:0]       g_temp_r;
+logic [(7+2+3)-1:0]         y_temp_r; 			//in order to be consistent in sizes
+logic [2*(7+1+3)-1:0]       y_square_r;
+logic [3*(7+1+3)-1:0]       b_partial_r;
 logic [7:0]                 lzeros_r;
 
 always @(posedge clk)
@@ -135,7 +137,7 @@ begin
                     ss_next = RESULT;
                     s_r_next = s_op1_i;
                     e_r_next = extE_op1_i;
-                    g_next = {extF_op1_i, 8'd0};
+                    g_next = {extF_op1_i, 3'd0};
                     isNaN_next = isNaN_op1_i;
                     isZ_next = isZ_op1_i;
                     isInf_next = isInf_op1_i;
@@ -146,28 +148,29 @@ begin
                     isNaN_next  = '0;
                     isZ_next    = '0;
                     isInf_next  = '0;
-                    b_next = (extE_op1_i[0] || extE_op1_i == '0) ? extF_op1_i : (extF_op1_i) >> 1;          //if exp is even, unbiased is odd, so divided by 2 would lead to fractionary exponent
-                    e_r_next = (extE_op1_i >> 1) + 64;                                                      //to solve this we put part of the exponent inside the mantissa and make it even
-                    s_r_next = s_op1_i;                                                                     //exponent calculation can be done immediately then
-                    g_next = {b_next, 14'd0}; 		
+                    b_next = (extE_op1_i[0] || (extE_op1_i == '0)) ? {extF_op1_i, 3'd0} : {1'd0, extF_op1_i, 2'd0};     //if exp is even, unbiased is odd, so divided by 2 would lead to fractionary exponent
+                    e_r_next = (extE_op1_i >> 1) + 64;                                                      			//to solve this we put part of the exponent inside the mantissa and make it even
+                    s_r_next = s_op1_i;                                                                     			//exponent calculation can be done immediately then
+                    g_next = b_next; 																					//second constructor is first constructor >> 1
                     iteration_next = '0;	
                 end
             end
-        end
-        WORK:
-        begin
-            y_temp_r = {(12'b110000000000 - ({1'b0, b_r})), 1'b0} >> 1;
-            y_next = {y_temp_r[11:2], (y_temp_r[1] || y_temp_r[0])};                         //taking the first 8 bits of the result of the previous operations (we are sure that the most significant bit will always be 0)
+        end				// ifffffffgrs
+        WORK:			// 110000000000
+        begin			// iifffffffgrs
+			y_temp_r = 12'b110000000000 - ({1'b0, b_r});
+            y_next = {y_temp_r[11:2], |y_double_temp_r[1:0]};                         //taking the first 8 bits of the result of the previous operations (we are sure that the most significant bit will always be 0)
             ss_next = CALC;
         end 
         CALC:
         begin
             y_square_r = y_r * y_r;
             b_partial_r = b_r * y_square_r;
-            b_next = b_partial_r[21 -: 8];			//each number has 7 fractional digits, 3 multiplications implies 21 fractional digits, bit indexed 21 is the first integer digit
-            g_next = (g_r[15-:8] * y_r) << 1;		//we use only the most relevant bits for the multiplication. The result would have 2 integer digits, so we shift		 
+            b_next = b_partial_r[30 -: 11];				//each number has 7+3 fractional digits, 3 multiplications implies 30 fractional digits, bit indexed 30 is the first integer digit
+            g_temp_r = (g_r * y_r);				//we use only the most relevant bits for the multiplication. The result would have 2 integer digits, so we shift		 
+			g_next = {g_temp_r[20 -:10], |g_temp_r[10:0]};
             iteration_next = iteration_r + 1;
-            if(iteration_r < NUMBER_OF_ITERATIONS - 1 && b_next != 'b10000000)        
+            if(iteration_r < NUMBER_OF_ITERATIONS - 1 && b_next != 'b10000000000)        
                 ss_next = WORK;
             else
                 ss_next = RESULT;
@@ -175,11 +178,10 @@ begin
         RESULT:
 		begin
 			valid_o = '1;
-			lzeros_r = FUNC_numLeadingZeros(g_r[15-:8]);
+			lzeros_r = FUNC_numLeadingZeros(g_r[10-:8]);
             s_res_o = s_r;
             e_res_o = e_r - lzeros_r;
-            g_temp_r = g_r << lzeros_r;
-            f_res_o = g_temp_r[15-:8];
+            f_res_o = g_r << lzeros_r;
             isNaN_o = isNaN_r;
             isZ_o = isZ_r;
             isInf_o = isInf_r;
