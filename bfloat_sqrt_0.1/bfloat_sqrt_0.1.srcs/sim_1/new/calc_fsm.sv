@@ -32,6 +32,7 @@ input logic             s_op1_i,
 input logic             isZ_op1_i,
 input logic             isInf_op1_i,
 input logic             isNaN_op1_i,
+input logic             isInv_i,
 
 output logic                s_res_o,
 output logic [(8+1)-1:0]    e_res_o,
@@ -56,12 +57,14 @@ logic [(7+1)-1 + 3 /*G, R, S bits*/:0]        	 g_r, g_next;
 logic [(7+1)-1 + 3 /*G, R, S bits*/:0]        	 i_r, i_next;
 logic                       s_r, s_r_next;                  //to keep in memory the sign of the result, that can be computed immediately
 logic [(8+1)-1:0]           e_r, e_r_next;                  //same as above	
+logic [(8+1)-1:0]           e_div2_r;
 logic [2:0]                 iteration_r, iteration_next;
 logic [8-1:0]	      		i_ib_r, i_ib_next;				//represents the number of bits needed to represent the integer part in the inverse
 
 logic                       isNaN_r, isNaN_next;
 logic                       isZ_r, isZ_next;
-logic                       isInf_r, isInf_next;	
+logic                       isInf_r, isInf_next;
+logic                       isInv_r, isInv_next;	
 
 //dimension of the sizes follows this representation:
 //x*(size+i+grs), where x represents the number of float multiplied, size is the dimension of the fractional part, i of the integer part, grs are guard, round, sticky bits
@@ -90,6 +93,7 @@ begin
         isInf_r     <= 'x;
         iteration_r <= 'x;
 		i_ib_r		<= 'x;
+		isInv_r     <= 'x;
     end
     else
     begin
@@ -105,6 +109,7 @@ begin
         isInf_r <= isInf_next;
         iteration_r <= iteration_next;
 		i_ib_r <= i_ib_next;
+		isInv_r <= isInv_next;
     end
 
 end
@@ -130,6 +135,7 @@ begin
 	isNaN_next = isNaN_r;
 	isZ_next = isZ_r;
 	isInf_next = isInf_r;
+	isInv_next = isInv_r;
 	iteration_next = iteration_r;
 	i_ib_next = i_ib_r;
 //-------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -145,7 +151,6 @@ begin
                     e_r_next = 'd255;
                     g_next = '0 - 1;
                     isNaN_next = '1;
-					//ADD SUPPROT FOR INVERSE
                 end
                 else if(isZ_op1_i | isInf_op1_i | isNaN_op1_i)
                 begin
@@ -153,10 +158,33 @@ begin
                     s_r_next = s_op1_i;
                     e_r_next = extE_op1_i;
                     g_next = {extF_op1_i, 3'd0};
-					//ADD SUPPROT FOR INVERSE
-                    isNaN_next = isNaN_op1_i;
-                    isZ_next = isZ_op1_i;
-                    isInf_next = isInf_op1_i;
+					if(isInv_i)
+					begin
+					   if(isNaN_op1_i)
+					   begin
+					       isNaN_next = isNaN_op1_i;
+					       isZ_next = isZ_op1_i;
+					       isInf_next = isInf_op1_i;
+					   end
+					   else if(isZ_op1_i)
+					   begin
+					       isInf_next = 'd1;
+					       isZ_next = 'd0;
+					       isNaN_next = isNaN_op1_i;
+					   end
+					   else if(isInf_op1_i)
+					   begin
+					       isInf_next = 'd0;
+					       isZ_next = 'd1;
+					       isNaN_next = isNaN_op1_i;
+					   end
+					end
+					else
+					begin
+                        isNaN_next = isNaN_op1_i;
+                        isZ_next = isZ_op1_i;
+                        isInf_next = isInf_op1_i;
+                   end
                 end
                 else
                 begin
@@ -165,7 +193,8 @@ begin
                     isZ_next    = '0;
                     isInf_next  = '0;
                     b_next = (extE_op1_i[0] || (extE_op1_i == '0)) ? {extF_op1_i, 3'd0} : {1'd0, extF_op1_i, 2'd0};     //if exp is even, unbiased is odd, so divided by 2 would lead to fractionary exponent
-                    e_r_next = (extE_op1_i >> 1) + 64;                                                      			//to solve this we put part of the exponent inside the mantissa and make it even
+                    e_div2_r = (extE_op1_i >> 1) + 64;                                                      			//to solve this we put part of the exponent inside the mantissa and make it even
+                    e_r_next = (isInv_i) ? e_div2_r : 'd190 - e_div2_r;                                                 //line added to handle invsqrt case
                     s_r_next = s_op1_i;                                                                     			//exponent calculation can be done immediately then
                     g_next = b_next; 																					//second constructor is first constructor >> 1
 					i_next = 11'b10000000000;
@@ -201,10 +230,19 @@ begin
         RESULT:
 		begin
 			valid_o = '1;
-			lzeros_r = FUNC_numLeadingZeros(g_r[10-:8]);
-            s_res_o = s_r;
-            e_res_o = e_r - lzeros_r;
-            f_res_o = g_r << lzeros_r;
+			if(~isInv_r)
+			begin
+                lzeros_r = FUNC_numLeadingZeros(g_r[10-:8]);
+                s_res_o = s_r;
+                e_res_o = e_r - lzeros_r;
+                f_res_o = g_r << lzeros_r;
+            end
+            else
+            begin
+                s_res_o = s_r;
+                e_res_o = e_r + i_ib_r - 'd1;
+                f_res_o = i_r;
+            end
             isNaN_o = isNaN_r;
             isZ_o = isZ_r;
             isInf_o = isInf_r;
