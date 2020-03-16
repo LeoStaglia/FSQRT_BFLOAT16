@@ -193,8 +193,8 @@ begin
                     isZ_next    = '0;
                     isInf_next  = '0;
                     b_next = (extE_op1_i[0] || (extE_op1_i == '0)) ? {extF_op1_i, 3'd0} : {1'd0, extF_op1_i, 2'd0};     //if exp is even, unbiased is odd, so divided by 2 would lead to fractionary exponent
-                    e_div2_r = (extE_op1_i >> 1) + 64;                                                      			//to solve this we put part of the exponent inside the mantissa and make it even
-                    e_r_next = (isInv_i) ? e_div2_r : 'd190 - e_div2_r;                                                 //line added to handle invsqrt case
+                    e_div2_r = (extE_op1_i >> 1);                                                      			    //to solve this we put part of the exponent inside the mantissa and make it even
+                    e_r_next = (isInv_i) ? e_div2_r + 'd64 : 'd190 - e_div2_r;                                           //line added to handle invsqrt case
                     s_r_next = s_op1_i;                                                                     			//exponent calculation can be done immediately then
                     g_next = b_next; 																					//second constructor is first constructor >> 1
 					i_next = 11'b10000000000;
