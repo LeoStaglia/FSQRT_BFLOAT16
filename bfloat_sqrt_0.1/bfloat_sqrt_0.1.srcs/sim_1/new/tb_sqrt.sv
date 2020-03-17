@@ -54,8 +54,8 @@ module tb_sqrt();
     
     always #HALF_CLK_PERIOD_NS clk = ~clk;
     
-    calc_fsm 
-        calc_fsm0(
+    lampFPU_sqrt 
+        lampFPU_sqrt0(
             .clk(clk),
             .rst(rst),
             .valid_i(valid_i_tb),

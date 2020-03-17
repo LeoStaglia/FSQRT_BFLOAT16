@@ -69,7 +69,9 @@ package lampFPU_pkg;
 
 		FPU_EQ		= 4'd7,
 		FPU_LT		= 4'd8,
-		FPU_LE		= 4'd9
+		FPU_LE		= 4'd9,
+		FPU_SQRT    = 4'd10,
+		FPU_ISQRT   = 4'd11
 	} opcodeFPU_t;
 
 	function automatic logic [LAMP_FLOAT_S_DW+LAMP_FLOAT_E_DW+LAMP_FLOAT_F_DW-1:0] FUNC_splitOperand(input [LAMP_FLOAT_DW-1:0] op);
