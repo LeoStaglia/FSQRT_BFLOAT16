@@ -29,21 +29,21 @@ module tb_sqrt();
     
     logic clk;
     logic rst;
-    logic valid_i_tb;
+    logic doSqrt_i_tb;
     logic [(7+1)-1:0] extF_op1_i_tb;
-    logic [(8+1)-1:0] extE_op1_i_tb;
+    logic [8-1:0] e_op1_i_tb;
     logic             s_op1_i_tb;
     logic             isZ_op1_i_tb;
     logic             isInf_op1_i_tb;
-    logic             isNaN_op1_i_tb;
+    logic             isSNaN_op1_i_tb;
+    logic             isQNaN_op1_i_tb;
+    logic             isOpInv_i_tb;
     
     logic                s_res_o_tb;
-    logic [(8+1)-1:0]    e_res_o_tb;
+    logic [8-1:0]        e_res_o_tb;
     logic [(7+2)+3-1:0]  f_res_o_tb;
     logic                valid_o_tb;
-    logic                isNaN_o_tb;
-    logic                isZ_o_tb;
-    logic                isInf_o_tb;
+    logic                isToRound_o_tb;
     
     //useful to pass data to the C function
     logic [7:0]          exp;
@@ -56,23 +56,23 @@ module tb_sqrt();
     
     lampFPU_sqrt 
         lampFPU_sqrt0(
-            .clk(clk),
-            .rst(rst),
-            .valid_i(valid_i_tb),
-            .extF_op1_i(extF_op1_i_tb),
-            .extE_op1_i(extE_op1_i_tb),
-            .s_op1_i(s_op1_i_tb),
-            .isZ_op1_i_tb(isZ_op1_i_tb),
-            .isInf_op1_i(isInf_op1_i_tb),
-            .isNaN_op1_i(isNaN_op1_i_tb),
-            .s_res_o(s_res_o_tb),
-            .e_res_o(e_res_o_tb),
-            .f_res_o(f_res_o_tb),
-            .valid_o(valid_o_tb),
-            .isNaN_o(isNaN_o_tb),
-            .isZ_o(isZ_o_tb),
-            .isInf_o(isInf_o_tb)
-        );
+               .clk(clk),
+               .rst(rst),
+               .doSqrt_i(doSqrt_i_tb),
+               .extF_op1_i(extF_op1_i_tb),
+               .e_op1_i(e_op1_i_tb),
+               .s_op1_i(s_op1_i_tb),
+               .isZ_op1_i(isZ_op1_i_tb),
+               .isInf_op1_i(isInf_op1_i_tb),
+               .isSNaN_op1_i(isSNaN_op1_i_tb),
+               .isQNaN_op1_i(isQNaN_op1_i_tb),
+               .isOpInv_i(isOpInv_i_tb),
+               .s_res_o(s_res_o_tb),
+               .e_res_o(e_res_o_tb),
+               .f_res_o(f_res_o_tb),
+               .valid_o(valid_o_tb),
+               .isToRound_o(isToRound_o_tb)
+           );
     
     
     
@@ -80,20 +80,18 @@ module tb_sqrt();
     begin
          clk <= 1;
          rst = 1;
-         valid_i_tb = '0;
+         doSqrt_i_tb = '0;
          extF_op1_i_tb = '0;
-         extE_op1_i_tb = '0;
+         e_op1_i_tb = '0;
          s_op1_i_tb = '0;
          isZ_op1_i_tb = '0;
          isInf_op1_i_tb = '0;
-         isNaN_op1_i_tb = '0;
-         s_res_o_tb = '0;
-         e_res_o_tb = '0;
-         f_res_o_tb = '0;
-         valid_o_tb = '0;
-         isNaN_o_tb = '0;
-         isZ_o_tb = '0;
-         isInf_o_tb = '0;
+         isSNaN_op1_i_tb = '0;
+         isQNaN_op1_i_tb = '0;
+//         s_res_o_tb = '0;
+//         e_res_o_tb = '0;
+//         f_res_o_tb = '0;
+//         valid_o_tb = '0;
          repeat (10) @(posedge clk);
          rst <= 0;
          repeat (10) @(posedge clk);
@@ -103,7 +101,7 @@ module tb_sqrt();
          s_op1_i_tb <= sign;
          
          exp = $urandom_range(0, 255);
-         extE_op1_i_tb <= {1'b0, exp};
+         e_op1_i_tb <= exp;
          
          frac = $urandom_range(0, 127);
          if(exp)
@@ -126,9 +124,9 @@ module tb_sqrt();
             isInf_op1_i_tb <= 0;
          //NaN
          if(exp == 255 && frac)
-            isNaN_op1_i_tb <= 1;
+            isSNaN_op1_i_tb <= 1;
          else
-            isNaN_op1_i_tb <= 0;
+            isSNaN_op1_i_tb <= 0;
             
          while(!valid_o_tb) @(posedge clk);
          

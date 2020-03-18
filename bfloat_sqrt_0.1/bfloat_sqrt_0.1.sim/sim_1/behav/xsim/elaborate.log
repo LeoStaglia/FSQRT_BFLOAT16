@@ -1,0 +1,15 @@
+Vivado Simulator 2018.2
+Copyright 1986-1999, 2001-2018 Xilinx, Inc. All Rights Reserved.
+Running: C:/Xilinx/Vivado/2018.2/bin/unwrapped/win64.o/xelab.exe -wto 796d4bb79d364b3d8480bcd7e881709b --incr --debug typical --relax --mt 2 -L xil_defaultlib -L unisims_ver -L unimacro_ver -L secureip --snapshot tb_sqrt_behav xil_defaultlib.tb_sqrt xil_defaultlib.glbl -log elaborate.log --sv_lib dpi -sv_root C:/Users/liuna/AppData/Roaming/Xilinx/Vivado/dpi.a 
+Using 2 slave threads.
+Starting static elaboration
+Completed static elaboration
+Starting simulation data flow analysis
+WARNING: [XSIM 43-4099] "C:/Users/liuna/FSQRT_BFLOAT16/bfloat_sqrt_0.1/bfloat_sqrt_0.1.srcs/sim_1/new/lampFPU_pkg.sv" Line 17. Module lampFPU_pkg doesn't have a timescale but at least one module in design has a timescale.
+Completed simulation data flow analysis
+Time Resolution for simulation is 1ps
+Compiling module xil_defaultlib.lampFPU_sqrt
+Compiling module xil_defaultlib.tb_sqrt
+Compiling module xil_defaultlib.glbl
+Compiling package xil_defaultlib.lampFPU_pkg
+Invalid path for DPI library: C:\Users\liuna\FSQRT_BFLOAT16\bfloat_sqrt_0.1\bfloat_sqrt_0.1.sim\sim_1\behav\xsim\xsim.dir\xsc\dpi.a
