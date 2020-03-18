@@ -39,7 +39,7 @@ module tb_sqrt();
     
     logic                s_res_o_tb;
     logic [(8+1)-1:0]    e_res_o_tb;
-    logic [(7+1)-1:0]    f_res_o_tb;
+    logic [(7+2)+3-1:0]  f_res_o_tb;
     logic                valid_o_tb;
     logic                isNaN_o_tb;
     logic                isZ_o_tb;
@@ -134,7 +134,7 @@ module tb_sqrt();
          
          res = DPI_fsqrt({sign, exp, frac, 16'b0});
          
-         if(res[31-:16] == {s_res_o_tb, e_res_o_tb, f_res_o_tb[6:0]})
+         if(res[31-:16] == {s_res_o_tb, e_res_o_tb, f_res_o_tb[11-:7]})
             $display("Correct");
          else
             $display("Not correct");
