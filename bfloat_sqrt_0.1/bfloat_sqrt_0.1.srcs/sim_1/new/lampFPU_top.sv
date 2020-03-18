@@ -109,7 +109,7 @@ output	logic							isReady_o;
     //  sqrt outputs
     logic                                   sqrt_s_res;
     logic [(LAMP_FLOAT_E_DW+1)-1:0]         sqrt_e_res;
-    logic [(LAMP_FLOAT_F_DW+1+3)-1:0]       sqrt_f_res;
+    logic [(LAMP_FLOAT_F_DW+2+3)-1:0]       sqrt_f_res;
     logic                                   sqrt_valid;
     logic                                   sqrt_isToRound;
 
@@ -429,7 +429,7 @@ output	logic							isReady_o;
 					begin
 					    s_res                       =   sqrt_s_res;
 					    e_res                       =   sqrt_e_res;
-					    f_res                       =   {1'b0, sqrt_f_res};
+					    f_res                       =   sqrt_f_res;
 					    isOverflow                  =   1'b0;
 					    isUnderflow                 =   1'b0;
 					    isToRound                   =   sqrt_isToRound;

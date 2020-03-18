@@ -37,7 +37,7 @@ input logic             isOpInv_i,
 
 output logic                s_res_o,
 output logic [8-1:0]        e_res_o,
-output logic [(7+1)-1 + 3 /*G, R, S bits*/:0]    f_res_o,
+output logic [(7+2)-1 + 3 /*G, R, S bits*/:0]    f_res_o,	//+2 comes from integer digit and overflow (always 0)
 output logic                valid_o,
 output logic 				isToRound_o
 );
@@ -212,26 +212,27 @@ begin
         RESULT:
 		begin
 			valid_o = '1;
+			//5'b0 is there because top truncates last 5 bits in case of exceptional values
 			if(isQNaN_r)
-			    {s_res_o, e_res_o, f_res_o} = {s_r, QNAN_E_F, 4'b0};
+			    {s_res_o, e_res_o, f_res_o} = {s_r, QNAN_E_F, 5'b0};		
             else if(isSNaN_r)
-                {s_res_o, e_res_o, f_res_o} = {s_r, SNAN_E_F, 4'b0};
+                {s_res_o, e_res_o, f_res_o} = {s_r, SNAN_E_F, 5'b0};
             else if(isZ_r)
-                {s_res_o, e_res_o, f_res_o} = {s_r, ZERO_E_F, 4'b0};
+                {s_res_o, e_res_o, f_res_o} = {s_r, ZERO_E_F, 5'b0};
             else if(isInf_r)
-                {s_res_o, e_res_o, f_res_o} = {s_r, INF_E_F, 4'b0};
+                {s_res_o, e_res_o, f_res_o} = {s_r, INF_E_F, 5'b0};
 			else if(~isInv_r)
 			begin
                 lzeros_r = FUNC_numLeadingZeros(g_r[10-:8]);
                 s_res_o = s_r;
                 e_res_o = e_r - lzeros_r;
-                f_res_o = g_r << lzeros_r;
+                f_res_o = {1'b0, g_r << lzeros_r};
             end
             else
             begin
                 s_res_o = s_r;
                 e_res_o = e_r + i_ib_r - 'd1;
-                f_res_o = i_r;
+                f_res_o = {1'b0, i_r};
             end
             isToRound_o = ~(isQNaN_r | isSNaN_r | isZ_r | isInf_r);
             
