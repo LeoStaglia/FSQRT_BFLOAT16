@@ -67,49 +67,49 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="D:/Downloads/bfloat_fpu_systemverilog-master/bfloat_fpu_systemverilog-master/rtl/lampFPU_addsub.sv">
+      <File Path="$PSRCDIR/sim_1/new/lampFPU_addsub.sv">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="D:/Downloads/bfloat_fpu_systemverilog-master/bfloat_fpu_systemverilog-master/rtl/lampFPU_cmp.sv">
+      <File Path="$PSRCDIR/sim_1/new/lampFPU_cmp.sv">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="D:/Downloads/bfloat_fpu_systemverilog-master/bfloat_fpu_systemverilog-master/rtl/lampFPU_div.sv">
+      <File Path="$PSRCDIR/sim_1/new/lampFPU_div.sv">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="D:/Downloads/bfloat_fpu_systemverilog-master/bfloat_fpu_systemverilog-master/rtl/lampFPU_f2i.sv">
+      <File Path="$PSRCDIR/sim_1/new/lampFPU_f2i.sv">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="D:/Downloads/bfloat_fpu_systemverilog-master/bfloat_fpu_systemverilog-master/rtl/lampFPU_fractDiv.sv">
+      <File Path="$PSRCDIR/sim_1/new/lampFPU_fractDiv.sv">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="D:/Downloads/bfloat_fpu_systemverilog-master/bfloat_fpu_systemverilog-master/rtl/lampFPU_i2f.sv">
+      <File Path="$PSRCDIR/sim_1/new/lampFPU_i2f.sv">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="D:/Downloads/bfloat_fpu_systemverilog-master/bfloat_fpu_systemverilog-master/rtl/lampFPU_mul.sv">
+      <File Path="$PSRCDIR/sim_1/new/lampFPU_mul.sv">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
@@ -151,7 +151,7 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="D:/Downloads/bfloat_fpu_systemverilog-master/bfloat_fpu_systemverilog-master/tb/tb_lampFPU.sv">
+      <File Path="$PSRCDIR/sim_1/new/tb_lampFPU.sv">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
