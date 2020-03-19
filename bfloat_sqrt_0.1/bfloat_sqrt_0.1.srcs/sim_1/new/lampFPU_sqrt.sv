@@ -124,10 +124,12 @@ begin
     e_res_o = '0;
     f_res_o = '0;
     s_res_o = '0;
+    isToRound_o = '0;
     //internal registers
     b_next = b_r;
     y_next = y_r;
     g_next = g_r;
+    i_next = i_r;
     s_r_next = s_r;
     e_r_next = e_r;
     ss_next = ss;
@@ -213,7 +215,7 @@ begin
 		begin
 			valid_o = '1;
 			//5'b0 is there because top truncates last 5 bits in case of exceptional values
-			if(isQNaN_r)
+			unique if(isQNaN_r)
 			    {s_res_o, e_res_o, f_res_o} = {s_r, QNAN_E_F, 5'b0};		
             else if(isSNaN_r)
                 {s_res_o, e_res_o, f_res_o} = {s_r, SNAN_E_F, 5'b0};
@@ -221,18 +223,21 @@ begin
                 {s_res_o, e_res_o, f_res_o} = {s_r, ZERO_E_F, 5'b0};
             else if(isInf_r)
                 {s_res_o, e_res_o, f_res_o} = {s_r, INF_E_F, 5'b0};
-			else if(~isInv_r)
+			else 
 			begin
-                lzeros_r = FUNC_numLeadingZeros(g_r[10-:8]);
-                s_res_o = s_r;
-                e_res_o = e_r - lzeros_r;
-                f_res_o = {1'b0, g_r << lzeros_r};
-            end
-            else
-            begin
-                s_res_o = s_r;
-                e_res_o = e_r + i_ib_r - 'd1;
-                f_res_o = {1'b0, i_r};
+                if(~isInv_r)
+                begin
+                    lzeros_r = FUNC_numLeadingZeros(g_r[10-:8]);
+                    s_res_o = s_r;
+                    e_res_o = e_r - lzeros_r;
+                    f_res_o = {1'b0, g_r << lzeros_r};
+                end
+                else
+                begin
+                    s_res_o = s_r;
+                    e_res_o = e_r + i_ib_r - 1;
+                    f_res_o = {1'b0, i_r};
+                end
             end
             isToRound_o = ~(isQNaN_r | isSNaN_r | isZ_r | isInf_r);
             
