@@ -151,7 +151,7 @@ begin
                 begin
                     ss_next = RESULT;
                     s_r_next = '1;
-                    isSNaN_next = '1;
+                    isQNaN_next = '1;
                 end
                 else if(isZ_op1_i | isInf_op1_i | isQNaN_op1_i | isSNaN_op1_i)
                 begin
@@ -178,7 +178,7 @@ begin
                     ss_next = WORK;
                     b_next = (e_op1_i[0] || (e_op1_i == '0)) ? {extF_op1_i, 3'd0} : {1'd0, extF_op1_i, 2'd0};     //if exp is even, unbiased is odd, so divided by 2 would lead to fractionary exponent
                     e_div2_r = (e_op1_i >> 1);                                                      			    //to solve this we put part of the exponent inside the mantissa and make it even
-                    e_r_next = (isOpInv_i) ? e_div2_r + 'd64 : 'd190 - e_div2_r;                                           //line added to handle invsqrt case
+                    e_r_next = ~(isOpInv_i) ? e_div2_r + 64 : 190 - e_div2_r;                                           //line added to handle invsqrt case
                     s_r_next = s_op1_i;                                                                     			//exponent calculation can be done immediately then
                     g_next = b_next; 																					//second constructor is first constructor >> 1
 					i_next = 11'b10000000000;
@@ -213,7 +213,7 @@ begin
         end
         RESULT:
 		begin
-			valid_o = '1;
+		    valid_o = '1;
 			//5'b0 is there because top truncates last 5 bits in case of exceptional values
 			unique if(isQNaN_r)
 			    {s_res_o, e_res_o, f_res_o} = {s_r, QNAN_E_F, 5'b0};		
