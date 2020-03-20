@@ -108,7 +108,7 @@ output	logic							isReady_o;
 	
     //  sqrt outputs
     logic                                   sqrt_s_res;
-    logic [(LAMP_FLOAT_E_DW+1)-1:0]         sqrt_e_res;
+    logic [(LAMP_FLOAT_E_DW)-1:0]         sqrt_e_res;
     logic [(LAMP_FLOAT_F_DW+2+3)-1:0]       sqrt_f_res;
     logic                                   sqrt_valid;
     logic                                   sqrt_isToRound;
