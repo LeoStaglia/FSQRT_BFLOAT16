@@ -46,6 +46,7 @@ import lampFPU_pkg::*;
 
 localparam IDLE = 2'b00, WORK = 2'b01, CALC = 2'b10, RESULT = 2'b11;
 localparam NUMBER_OF_ITERATIONS = 5;
+localparam STICKYANALYSIS = 1;
 
 //state registers
 logic [1:0]     ss, ss_next;
@@ -190,7 +191,7 @@ begin
         WORK:			// 110000000000
         begin			// iifffffffgrs
 			y_temp_r = 12'b110000000000 - ({1'b0, b_r});
-            y_next = {y_temp_r[11:2], |y_temp_r[1:0]};                         //taking the first 8 bits of the result of the previous operations (we are sure that the most significant bit will always be 0)
+            y_next = {y_temp_r[11:2], y_temp_r[1]};                         //taking the first 8 bits of the result of the previous operations (we are sure that the most significant bit will always be 0)
             ss_next = CALC;
         end 
         CALC:
@@ -199,12 +200,12 @@ begin
             b_partial_r = b_r * y_square_r;
             b_next = b_partial_r[30 -: 11];				//each number has 7+3 fractional digits, 3 multiplications implies 30 fractional digits, bit indexed 30 is the first integer digit
             g_temp_r = (g_r * y_r);				//we use only the most relevant bits for the multiplication. The result would have 2 integer digits, so we shift		 
-			g_next = {g_temp_r[20 -:10], |g_temp_r[10:0]};
+			g_next = {g_temp_r[20 -:10], |g_temp_r[10-:STICKYANALYSIS]};
 			i_temp_r = (i_r * y_r);
 			lzeros_inv_r = FUNC_numLeadingZeros(i_temp_r[21-:8]);
 			i_ib_next = i_ib_r + 1 - lzeros_inv_r;
 			i_temp_r = i_temp_r << lzeros_inv_r;
-			i_next = {i_temp_r[21 -:10], |i_temp_r[10:0]};		//check if this notation can work, otherwise use << 
+			i_next = {i_temp_r[21 -:10], |i_temp_r[10-:STICKYANALYSIS]};		//check if this notation can work, otherwise use << 
             iteration_next = iteration_r + 1;
             if(iteration_r < NUMBER_OF_ITERATIONS - 1 && b_next != 'b10000000000)        
                 ss_next = WORK;
