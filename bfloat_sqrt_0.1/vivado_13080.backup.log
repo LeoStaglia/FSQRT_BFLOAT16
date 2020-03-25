@@ -1,0 +1,131 @@
+#-----------------------------------------------------------
+# Vivado v2018.2 (64-bit)
+# SW Build 2258646 on Thu Jun 14 20:03:12 MDT 2018
+# IP Build 2256618 on Thu Jun 14 22:10:49 MDT 2018
+# Start of session at: Sun Mar 22 11:03:56 2020
+# Process ID: 13080
+# Current directory: C:/Users/liuna/FSQRT_BFLOAT16/bfloat_sqrt_0.1
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent13372 C:\Users\liuna\FSQRT_BFLOAT16\bfloat_sqrt_0.1\bfloat_sqrt_0.1.xpr
+# Log file: C:/Users/liuna/FSQRT_BFLOAT16/bfloat_sqrt_0.1/vivado.log
+# Journal file: C:/Users/liuna/FSQRT_BFLOAT16/bfloat_sqrt_0.1\vivado.jou
+#-----------------------------------------------------------
+start_gui
+open_project C:/Users/liuna/FSQRT_BFLOAT16/bfloat_sqrt_0.1/bfloat_sqrt_0.1.xpr
+Scanning sources...
+Finished scanning sources
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1704] No user IP repositories specified
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'D:/Vivado/2018.2/data/ip'.
+open_project: Time (s): cpu = 00:00:13 ; elapsed = 00:00:08 . Memory (MB): peak = 879.219 ; gain = 87.008
+update_compile_order -fileset sources_1
+exsc C:/Users/liuna/FSQRT_BFLOAT16/dpi_lampFPU.c
+WARNING: [Common 17-259] Unknown Tcl command 'xsc C:/Users/liuna/FSQRT_BFLOAT16/dpi_lampFPU.c' sending command to the OS shell for execution. It is recommended to use 'exec' to send the command to the OS shell.
+Multi-threading is on. Using 6 slave threads.
+Running compilation flow
+Done compilation
+Running command : D:\Vivado\2018.2\data\..\tps\mingw\6.2.0\win64.o\nt\bin\ar.exe rcs "C:\Users\liuna\FSQRT_BFLOAT16\bfloat_sqrt_0.1\dpi.a" "C:/Users\liuna\FSQRT_BFLOAT16\bfloat_sqrt_0.1\xsim.dir\work\xsc\dpi_lampFPU.win64.obj"   > NUL 2>&1
+Done linking: "C:\Users\liuna\FSQRT_BFLOAT16\bfloat_sqrt_0.1\dpi.a"
+In file included from C:/Users/liuna/FSQRT_BFLOAT16/dpi_lampFPU.c:17:0:
+D:\Vivado\2018.2\data\xsim\include\svdpi.h:104:1: warning: 'dllimport' attribute ignored [-Wattributes]
+ XXTERN typedef void* svScope;
+ ^~~~~~
+D:\Vivado\2018.2\data\xsim\include\svdpi.h:106:1: warning: 'dllimport' attribute ignored [-Wattributes]
+ XXTERN typedef void* svOpenArrayHandle;
+ ^~~~~~
+set property -name {xsim.elaborate.xelab.more_options} -value {--sv_lib dpi -sv_root C:/Users/liuna/FSQRT_BFLOAT16/bfloat_sqrt_0.1/dpi.a} -objects [get_filesets sim_1]
+wrong # args: should be "set varName ?newValue?"
+set_property -name {xsim.elaborate.xelab.more_options} -value {--sv_lib dpi -sv_root C:/Users/liuna/FSQRT_BFLOAT16/bfloat_sqrt_0.1/dpi.a} -objects [get_filesets sim_1]
+launch_simulation
+INFO: [Vivado 12-5682] Launching behavioral simulation in 'C:/Users/liuna/FSQRT_BFLOAT16/bfloat_sqrt_0.1/bfloat_sqrt_0.1.sim/sim_1/behav/xsim'
+INFO: [SIM-utils-51] Simulation object is 'sim_1'
+INFO: [SIM-utils-54] Inspecting design source files for 'tb_lampFPU' in fileset 'sim_1'...
+INFO: [USF-XSim-97] Finding global include files...
+INFO: [USF-XSim-98] Fetching design files from 'sim_1'...
+INFO: [USF-XSim-2] XSim::Compile design
+INFO: [USF-XSim-61] Executing 'COMPILE and ANALYZE' step in 'C:/Users/liuna/FSQRT_BFLOAT16/bfloat_sqrt_0.1/bfloat_sqrt_0.1.sim/sim_1/behav/xsim'
+"xvlog --incr --relax -prj tb_lampFPU_vlog.prj"
+INFO: [USF-XSim-69] 'compile' step finished in '1' seconds
+INFO: [USF-XSim-3] XSim::Elaborate design
+INFO: [USF-XSim-61] Executing 'ELABORATE' step in 'C:/Users/liuna/FSQRT_BFLOAT16/bfloat_sqrt_0.1/bfloat_sqrt_0.1.sim/sim_1/behav/xsim'
+Vivado Simulator 2018.2
+Copyright 1986-1999, 2001-2018 Xilinx, Inc. All Rights Reserved.
+Running: D:/Vivado/2018.2/bin/unwrapped/win64.o/xelab.exe -wto 796d4bb79d364b3d8480bcd7e881709b --incr --debug typical --relax --mt 2 -L xil_defaultlib -L unisims_ver -L unimacro_ver -L secureip --snapshot tb_lampFPU_behav xil_defaultlib.tb_lampFPU xil_defaultlib.glbl -log elaborate.log --sv_lib dpi -sv_root C:/Users/liuna/FSQRT_BFLOAT16/bfloat_sqrt_0.1/dpi.a 
+Using 2 slave threads.
+Starting static elaboration
+Completed static elaboration
+Starting simulation data flow analysis
+WARNING: [XSIM 43-4099] "C:/Users/liuna/FSQRT_BFLOAT16/bfloat_sqrt_0.1/bfloat_sqrt_0.1.srcs/sim_1/new/lampFPU_addsub.sv" Line 17. Module lampFPU_addsub doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "C:/Users/liuna/FSQRT_BFLOAT16/bfloat_sqrt_0.1/bfloat_sqrt_0.1.srcs/sim_1/new/lampFPU_mul.sv" Line 17. Module lampFPU_mul doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "C:/Users/liuna/FSQRT_BFLOAT16/bfloat_sqrt_0.1/bfloat_sqrt_0.1.srcs/sim_1/new/lampFPU_div.sv" Line 17. Module lampFPU_div doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "C:/Users/liuna/FSQRT_BFLOAT16/bfloat_sqrt_0.1/bfloat_sqrt_0.1.srcs/sim_1/new/lampFPU_fractDiv.sv" Line 17. Module lampFPU_fractDiv doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "C:/Users/liuna/FSQRT_BFLOAT16/bfloat_sqrt_0.1/bfloat_sqrt_0.1.srcs/sim_1/new/lampFPU_f2i.sv" Line 17. Module lampFPU_f2i doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "C:/Users/liuna/FSQRT_BFLOAT16/bfloat_sqrt_0.1/bfloat_sqrt_0.1.srcs/sim_1/new/lampFPU_i2f.sv" Line 17. Module lampFPU_i2f doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "C:/Users/liuna/FSQRT_BFLOAT16/bfloat_sqrt_0.1/bfloat_sqrt_0.1.srcs/sim_1/new/lampFPU_cmp.sv" Line 17. Module lampFPU_cmp doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "C:/Users/liuna/FSQRT_BFLOAT16/bfloat_sqrt_0.1/bfloat_sqrt_0.1.srcs/sim_1/new/lampFPU_pkg.sv" Line 17. Module lampFPU_pkg doesn't have a timescale but at least one module in design has a timescale.
+Completed simulation data flow analysis
+Time Resolution for simulation is 1ps
+Compiling module xil_defaultlib.lampFPU_addsub
+Compiling module xil_defaultlib.lampFPU_mul
+Compiling module xil_defaultlib.lampFPU_fractDiv
+Compiling module xil_defaultlib.lampFPU_div
+Compiling module xil_defaultlib.lampFPU_f2i
+Compiling module xil_defaultlib.lampFPU_i2f
+Compiling module xil_defaultlib.lampFPU_cmp
+Compiling module xil_defaultlib.lampFPU_sqrt
+Compiling module xil_defaultlib.lampFPU_top
+Compiling module xil_defaultlib.tb_lampFPU
+Compiling module xil_defaultlib.glbl
+Compiling package xil_defaultlib.lampFPU_pkg
+INFO: [Common 17-41] Interrupt caught. Command should exit soon.
+INFO: [Common 17-344] 'run_program' was cancelled
+INFO: [Vivado 12-5357] 'elaborate' step aborted
+launch_simulation: Time (s): cpu = 00:00:01 ; elapsed = 00:00:05 . Memory (MB): peak = 895.465 ; gain = 0.000
+INFO: [Common 17-344] 'launch_simulation' was cancelled
+launch_simulation
+INFO: [Vivado 12-5682] Launching behavioral simulation in 'C:/Users/liuna/FSQRT_BFLOAT16/bfloat_sqrt_0.1/bfloat_sqrt_0.1.sim/sim_1/behav/xsim'
+INFO: [SIM-utils-51] Simulation object is 'sim_1'
+INFO: [SIM-utils-54] Inspecting design source files for 'tb_lampFPU' in fileset 'sim_1'...
+INFO: [USF-XSim-97] Finding global include files...
+INFO: [USF-XSim-98] Fetching design files from 'sim_1'...
+INFO: [USF-XSim-2] XSim::Compile design
+INFO: [USF-XSim-61] Executing 'COMPILE and ANALYZE' step in 'C:/Users/liuna/FSQRT_BFLOAT16/bfloat_sqrt_0.1/bfloat_sqrt_0.1.sim/sim_1/behav/xsim'
+"xvlog --incr --relax -prj tb_lampFPU_vlog.prj"
+INFO: [USF-XSim-69] 'compile' step finished in '1' seconds
+INFO: [USF-XSim-3] XSim::Elaborate design
+INFO: [USF-XSim-61] Executing 'ELABORATE' step in 'C:/Users/liuna/FSQRT_BFLOAT16/bfloat_sqrt_0.1/bfloat_sqrt_0.1.sim/sim_1/behav/xsim'
+Vivado Simulator 2018.2
+Copyright 1986-1999, 2001-2018 Xilinx, Inc. All Rights Reserved.
+Running: D:/Vivado/2018.2/bin/unwrapped/win64.o/xelab.exe -wto 796d4bb79d364b3d8480bcd7e881709b --incr --debug typical --relax --mt 2 -L xil_defaultlib -L unisims_ver -L unimacro_ver -L secureip --snapshot tb_lampFPU_behav xil_defaultlib.tb_lampFPU xil_defaultlib.glbl -log elaborate.log --sv_lib dpi -sv_root C:/Users/liuna/FSQRT_BFLOAT16/bfloat_sqrt_0.1/dpi.a 
+Using 2 slave threads.
+Starting static elaboration
+Completed static elaboration
+Starting simulation data flow analysis
+WARNING: [XSIM 43-4099] "C:/Users/liuna/FSQRT_BFLOAT16/bfloat_sqrt_0.1/bfloat_sqrt_0.1.srcs/sim_1/new/lampFPU_addsub.sv" Line 17. Module lampFPU_addsub doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "C:/Users/liuna/FSQRT_BFLOAT16/bfloat_sqrt_0.1/bfloat_sqrt_0.1.srcs/sim_1/new/lampFPU_mul.sv" Line 17. Module lampFPU_mul doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "C:/Users/liuna/FSQRT_BFLOAT16/bfloat_sqrt_0.1/bfloat_sqrt_0.1.srcs/sim_1/new/lampFPU_div.sv" Line 17. Module lampFPU_div doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "C:/Users/liuna/FSQRT_BFLOAT16/bfloat_sqrt_0.1/bfloat_sqrt_0.1.srcs/sim_1/new/lampFPU_fractDiv.sv" Line 17. Module lampFPU_fractDiv doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "C:/Users/liuna/FSQRT_BFLOAT16/bfloat_sqrt_0.1/bfloat_sqrt_0.1.srcs/sim_1/new/lampFPU_f2i.sv" Line 17. Module lampFPU_f2i doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "C:/Users/liuna/FSQRT_BFLOAT16/bfloat_sqrt_0.1/bfloat_sqrt_0.1.srcs/sim_1/new/lampFPU_i2f.sv" Line 17. Module lampFPU_i2f doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "C:/Users/liuna/FSQRT_BFLOAT16/bfloat_sqrt_0.1/bfloat_sqrt_0.1.srcs/sim_1/new/lampFPU_cmp.sv" Line 17. Module lampFPU_cmp doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "C:/Users/liuna/FSQRT_BFLOAT16/bfloat_sqrt_0.1/bfloat_sqrt_0.1.srcs/sim_1/new/lampFPU_pkg.sv" Line 17. Module lampFPU_pkg doesn't have a timescale but at least one module in design has a timescale.
+Completed simulation data flow analysis
+Time Resolution for simulation is 1ps
+Compiling module xil_defaultlib.lampFPU_addsub
+Compiling module xil_defaultlib.lampFPU_mul
+Compiling module xil_defaultlib.lampFPU_fractDiv
+Compiling module xil_defaultlib.lampFPU_div
+Compiling module xil_defaultlib.lampFPU_f2i
+Compiling module xil_defaultlib.lampFPU_i2f
+Compiling module xil_defaultlib.lampFPU_cmp
+Compiling module xil_defaultlib.lampFPU_sqrt
+Compiling module xil_defaultlib.lampFPU_top
+Compiling module xil_defaultlib.tb_lampFPU
+Compiling module xil_defaultlib.glbl
+Compiling package xil_defaultlib.lampFPU_pkg
+Invalid path for DPI library: C:\Users\liuna\FSQRT_BFLOAT16\bfloat_sqrt_0.1\bfloat_sqrt_0.1.sim\sim_1\behav\xsim\xsim.dir\xsc\dpi.a
+INFO: [USF-XSim-69] 'elaborate' step finished in '2' seconds
+ERROR: [USF-XSim-62] 'elaborate' step failed with error(s) while executing 'C:/Users/liuna/FSQRT_BFLOAT16/bfloat_sqrt_0.1/bfloat_sqrt_0.1.sim/sim_1/behav/xsim/elaborate.bat' script. Please check that the file has the correct 'read/write/execute' permissions and the Tcl console output for any other possible errors or warnings.
+ERROR: [Vivado 12-4473] Detected error while running simulation. Please correct the issue and retry this operation.
+ERROR: [Common 17-39] 'launch_simulation' failed due to earlier errors.
+exit
+INFO: [Common 17-206] Exiting Vivado at Sun Mar 22 11:12:58 2020...

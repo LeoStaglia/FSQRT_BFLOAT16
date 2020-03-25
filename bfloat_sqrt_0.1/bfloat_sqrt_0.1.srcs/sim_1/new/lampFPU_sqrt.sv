@@ -47,6 +47,8 @@ import lampFPU_pkg::*;
 localparam IDLE = 2'b00, WORK = 2'b01, CALC = 2'b10, RESULT = 2'b11;
 localparam NUMBER_OF_ITERATIONS = 5;
 localparam STICKYANALYSIS = 1;
+localparam SHIFT_CONST4=2, SHIFT_CONST2=1;
+localparam APPROX_CONST4 = 'd112, APPROX_CONST2 = 'd368;
 
 //state registers
 logic [1:0]     ss, ss_next;
@@ -193,10 +195,39 @@ begin
         end				// ifffffffgrs
         WORK:			// 110000000000
         begin			// iifffffffgrs
-			y_temp_r = 12'b110000000000 - ({1'b0, b_r});
-            y_next = {y_temp_r[11:2], y_temp_r[1]};                         //taking the first 8 bits of the result of the previous operations (we are sure that the most significant bit will always be 0)
-            y_square_next = {y_temp_r[11:2], y_temp_r[1]} * {y_temp_r[11:2], y_temp_r[1]};
-            ss_next = CALC;
+            if(b_r <= APPROX_CONST4)
+            begin
+                //Y is clamped to 4
+                b_next = b_r << SHIFT_CONST4*2; //We know shifting is appliable (without loss of information) due to numerical analysis
+                g_next = g_r << SHIFT_CONST4;
+                i_ib_next = i_ib_r + SHIFT_CONST4; //the invsqrt is considered by adding only the shifting factor to the number of non-fractional bits the shifting factor
+                iteration_next = iteration_r+1;
+                if(iteration_r < NUMBER_OF_ITERATIONS - 1 && b_next != 'b10000000000)        
+                    ss_next = WORK;
+                 else
+                    ss_next = RESULT;
+                
+            end
+            else if(b_r > 112 && b_r <= APPROX_CONST2)
+            begin
+                //Y is clamped to 2
+                b_next = b_r << SHIFT_CONST2*2; //We know shifting is appliable (without loss of information) due to numerical analysis
+                g_next = g_r << SHIFT_CONST2;
+                i_ib_next = i_ib_r + SHIFT_CONST2; //the invsqrt is considered by adding only the shifting factor to the number of non-fractional bits the shifting factor
+                iteration_next = iteration_r+1;
+                if(iteration_r < NUMBER_OF_ITERATIONS - 1 && b_next != 'b10000000000)        
+                    ss_next = WORK;
+                else
+                    ss_next = RESULT;
+                
+            end
+            else
+            begin
+                y_temp_r = 12'b110000000000 - ({1'b0, b_r});
+                y_next = {y_temp_r[11:2], y_temp_r[1]};                         //taking the first 8 bits of the result of the previous operations (we are sure that the most significant bit will always be 0)
+                y_square_next = {y_temp_r[11:2], y_temp_r[1]} * {y_temp_r[11:2], y_temp_r[1]};
+                ss_next = CALC;
+            end
         end 
         CALC:
         begin
