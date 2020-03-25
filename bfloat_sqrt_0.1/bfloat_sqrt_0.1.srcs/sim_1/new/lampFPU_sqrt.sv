@@ -55,6 +55,7 @@ logic [(7+1)-1 + 3 /*G, R, S bits*/:0]           b_r, b_next;
 logic [(7+1)-1 + 3 /*G, R, S bits*/:0]           y_r, y_next;
 logic [(7+1)-1 + 3 /*G, R, S bits*/:0]        	 g_r, g_next;
 logic [(7+1)-1 + 3 /*G, R, S bits*/:0]        	 i_r, i_next;
+logic [2*(7+1+3)-1:0]                            y_square_r, y_square_next;
 logic                       s_r, s_r_next;                  //to keep in memory the sign of the result, that can be computed immediately
 logic [8-1:0]               e_r, e_r_next;                  //same as above	
 logic [2:0]                 iteration_r, iteration_next;
@@ -71,7 +72,6 @@ logic                       isInv_r, isInv_next;
 logic [2*(7+1+3)-1:0]       g_temp_r;
 logic [2*(7+1+3)-1:0]		i_temp_r;
 logic [(7+2+3)-1:0]         y_temp_r; 			//in order to be consistent in sizes
-logic [2*(7+1+3)-1:0]       y_square_r;
 logic [3*(7+1+3)-1:0]       b_partial_r;
 logic [7:0]                 lzeros_r;
 logic [7:0]					lzeros_inv_r;
@@ -87,6 +87,7 @@ begin
         y_r         <= '0;
         g_r         <= '0;
 		i_r			<= '0;
+		y_square_r  <= '0;
         s_r         <= '0;
         e_r         <= '0;
         isSNaN_r    <= '0;
@@ -104,6 +105,7 @@ begin
         y_r <= y_next;
         g_r <= g_next;
 		i_r <= i_next;
+		y_square_r <= y_square_next;
         s_r <= s_r_next;
         e_r <= e_r_next;
         isSNaN_r <= isSNaN_next;
@@ -131,6 +133,7 @@ begin
     y_next = y_r;
     g_next = g_r;
     i_next = i_r;
+    y_square_next = y_square_r;
     s_r_next = s_r;
     e_r_next = e_r;
     ss_next = ss;
@@ -192,11 +195,11 @@ begin
         begin			// iifffffffgrs
 			y_temp_r = 12'b110000000000 - ({1'b0, b_r});
             y_next = {y_temp_r[11:2], y_temp_r[1]};                         //taking the first 8 bits of the result of the previous operations (we are sure that the most significant bit will always be 0)
+            y_square_next = {y_temp_r[11:2], y_temp_r[1]} * {y_temp_r[11:2], y_temp_r[1]};
             ss_next = CALC;
         end 
         CALC:
         begin
-            y_square_r = y_r * y_r;
             b_partial_r = b_r * y_square_r;
             b_next = b_partial_r[30 -: 11];				//each number has 7+3 fractional digits, 3 multiplications implies 30 fractional digits, bit indexed 30 is the first integer digit
             g_temp_r = (g_r * y_r);				//we use only the most relevant bits for the multiplication. The result would have 2 integer digits, so we shift		 
