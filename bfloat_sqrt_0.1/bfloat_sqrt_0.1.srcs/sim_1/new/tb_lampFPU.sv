@@ -146,23 +146,58 @@ module tb_lampFPU;
            op1_sign = 0;
            op1_exponent = $urandom_range(0, 255);
            op1_fraction = (op1_exponent >=0 && op1_exponent <255) ? $random : $urandom_range(0, 1)<<22;
-	       isOpInv = $urandom_range(0,1);
+	       isOpInv = 0;
 	   
-	       TASK_doSqrt_op ((isOpInv > 0) ? FPU_SQRT : FPU_ISQRT, {op1_sign, op1_exponent, op1_fraction}, isOpInv);	
+	       TASK_doSqrt_op ((isOpInv > 0) ? FPU_ISQRT : FPU_SQRT, {op1_sign, op1_exponent, op1_fraction}, isOpInv);	
        end
-       repeat(10)
+       repeat(100)
        begin
            @(posedge clk);
            numTest++;
            $display("Test-%d",numTest);
-           op1_sign = 1;
+           op1_sign = 0;
            op1_exponent = $urandom_range(0, 255);
            op1_fraction = (op1_exponent >=0 && op1_exponent <255) ? $random : $urandom_range(0, 1)<<22;
-           isOpInv = $urandom_range(0,1);
+           isOpInv = 1;
       
-           TASK_doSqrt_op ((isOpInv > 0) ? FPU_SQRT : FPU_ISQRT, {op1_sign, op1_exponent, op1_fraction}, isOpInv);
+           TASK_doSqrt_op ((isOpInv > 0) ? FPU_ISQRT : FPU_SQRT, {op1_sign, op1_exponent, op1_fraction}, isOpInv);
        end
 	endtask
+	
+	task TASK_testsqrt_denorm();
+       logic [LAMP_FLOAT_S_DW-1:0] op1_sign;
+       logic [LAMP_FLOAT_E_DW-1:0] op1_exponent;
+       logic [LAMP_FLOAT_F_DW-1:0] op1_fraction;
+       logic                       isOpInv;
+       
+       int                           numTest;
+       
+       numTest                =    0;
+       repeat(100)
+       begin
+           @(posedge clk);
+           numTest++;
+           $display("Test-%d",numTest);
+           op1_sign = 0;
+           op1_exponent = 0;
+           op1_fraction = (op1_exponent >=0 && op1_exponent <255) ? $random : $urandom_range(0, 1)<<22;
+           isOpInv = 0;
+       
+           TASK_doSqrt_op ((isOpInv > 0) ? FPU_ISQRT : FPU_SQRT, {op1_sign, op1_exponent, op1_fraction}, isOpInv);    
+       end
+       repeat(100)
+       begin
+           @(posedge clk);
+           numTest++;
+           $display("Test-%d",numTest);
+           op1_sign = 0;
+           op1_exponent = 0;
+           op1_fraction = (op1_exponent >=0 && op1_exponent <255) ? $random : $urandom_range(0, 1)<<22;
+           isOpInv = 1;
+      
+           TASK_doSqrt_op ((isOpInv > 0) ? FPU_ISQRT : FPU_SQRT, {op1_sign, op1_exponent, op1_fraction}, isOpInv);
+       end
+    endtask
 
 	task TASK_testI2f ();
 		int	numTest;

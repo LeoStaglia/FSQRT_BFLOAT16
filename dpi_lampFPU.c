@@ -199,17 +199,12 @@ DPI_fmul(unsigned int op1, unsigned int op2)
 //
 unsigned int DPI_fsqrt(unsigned int op, int isOpInv){
 	
-	float f_op;
-	
+	float f_op, res;
+	f_op = sqrt(*((float*) &op));
 	if(isOpInv)
-		f_op = *((float*) &op);
+		res = 1.0/f_op;
 	else
-	{
-		float f_input = *((float*) &op);
-		f_op = 1.0/f_input;
-	}
-	float res = sqrt(f_op);
-
+		res = f_op;
 	return *((unsigned int*) &res);
 	
 
