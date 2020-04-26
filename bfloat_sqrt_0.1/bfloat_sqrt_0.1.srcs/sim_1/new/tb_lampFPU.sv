@@ -93,9 +93,12 @@ module tb_lampFPU;
 		TASK_testArith (FPU_DIV);
 		TASK_testCmp ();
 		TASK_testI2f ();
+		TASK_testsqrt();
+		TASK_testsqrt_denorm();
 		rndMode_i_tb	= 	FPU_RNDMODE_TRUNCATE;
 		TASK_testF2i ();
 		TASK_testsqrt();
+		TASK_testsqrt_denorm();
 		repeat(200) @(posedge clk);
 		$finish;
 	end
