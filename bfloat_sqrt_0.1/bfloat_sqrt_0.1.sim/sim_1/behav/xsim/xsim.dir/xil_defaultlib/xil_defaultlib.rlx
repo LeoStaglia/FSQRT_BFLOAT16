@@ -1,8 +1,0 @@
-0.6
-2018.2
-Jun 14 2018
-20:41:02
-C:/Users/liuna/FSQRT_BFLOAT16/bfloat_sqrt_0.1/bfloat_sqrt_0.1.sim/sim_1/behav/xsim/glbl.v,1529022455,verilog,,,,glbl,,,,,,,,
-C:/Users/liuna/FSQRT_BFLOAT16/bfloat_sqrt_0.1/bfloat_sqrt_0.1.srcs/sim_1/new/lampFPU_pkg.sv,1584475031,systemVerilog,C:/Users/liuna/FSQRT_BFLOAT16/bfloat_sqrt_0.1/bfloat_sqrt_0.1.srcs/sim_1/new/lampFPU_sqrt.sv;C:/Users/liuna/FSQRT_BFLOAT16/bfloat_sqrt_0.1/bfloat_sqrt_0.1.srcs/sim_1/new/tb_sqrt.sv,C:/Users/liuna/FSQRT_BFLOAT16/bfloat_sqrt_0.1/bfloat_sqrt_0.1.srcs/sim_1/new/lampFPU_sqrt.sv,,$unit_lampFPU_pkg_sv;lampFPU_pkg,,,,,,,,
-C:/Users/liuna/FSQRT_BFLOAT16/bfloat_sqrt_0.1/bfloat_sqrt_0.1.srcs/sim_1/new/lampFPU_sqrt.sv,1584524917,systemVerilog,,C:/Users/liuna/FSQRT_BFLOAT16/bfloat_sqrt_0.1/bfloat_sqrt_0.1.srcs/sim_1/new/tb_sqrt.sv,,lampFPU_sqrt,,,,,,,,
-C:/Users/liuna/FSQRT_BFLOAT16/bfloat_sqrt_0.1/bfloat_sqrt_0.1.srcs/sim_1/new/tb_sqrt.sv,1584527218,systemVerilog,,,,tb_sqrt,,,,,,,,

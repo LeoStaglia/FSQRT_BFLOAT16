@@ -1,5 +1,0 @@
-Multi-threading is on. Using 6 slave threads.
-Running compilation flow
-Done compilation
-Running command : D:\Vivado\2018.2\data\..\tps\mingw\6.2.0\win64.o\nt\bin\ar.exe rcs "C:\Users\liuna\FSQRT_BFLOAT16\bfloat_sqrt_0.1\dpi.a" "C:/Users\liuna\FSQRT_BFLOAT16\bfloat_sqrt_0.1\xsim.dir\work\xsc\dpi_lampFPU.win64.obj"   > NUL 2>&1
-Done linking: "C:\Users\liuna\FSQRT_BFLOAT16\bfloat_sqrt_0.1\dpi.a"
