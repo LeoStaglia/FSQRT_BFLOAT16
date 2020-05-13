@@ -5,3 +5,4 @@ The repository is organized as follows:
 * RTL: is the folder that contains all the SystemVerilog files but the testbench one.
 * tb: is the folder that contains the resources for the testing of the module.
 * Sqrt_Project.pdf: is the pdf file that contains all the documentation about the project.
+* main.tex: LaTex code for the documentation.
